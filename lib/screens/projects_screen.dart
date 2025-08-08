@@ -183,29 +183,71 @@ class ProjectsScreen extends StatelessWidget {
               icon: const Icon(Icons.logout)),
         ],
       ),
-      body: projects.isEmpty
-          ? const Center(child: Text('No hay proyectos.'))
-          : ListView.builder(
-              itemCount: projects.length,
-              itemBuilder: (_, i) => ListTile(
-                title: Text(projects[i].name),
-                onTap: () => _navigateToProjectDetail(context, projects[i]),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
+      // ...existing code...
+body: projects.isEmpty
+    ? const Center(child: Text('No hay proyectos.'))
+    : Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.builder(
+          itemCount: projects.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 1.2,
+          ),
+          itemBuilder: (_, i) => Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => _navigateToProjectDetail(context, projects[i]),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () =>
-                          _showProjectDialog(context, project: projects[i]),
+                    Text(
+                      projects[i].name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _confirmDelete(context, projects[i]),
+                    const Spacer(),
+                    Text(
+                      '${projects[i].tasks.length} tareas',
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, size: 20),
+                          onPressed: () =>
+                              _showProjectDialog(context, project: projects[i]),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, size: 20),
+                          onPressed: () => _confirmDelete(context, projects[i]),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ),
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showProjectDialog(context),
         tooltip: 'Nuevo Proyecto',
