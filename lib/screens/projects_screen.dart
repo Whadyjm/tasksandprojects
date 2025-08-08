@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasksandprojects/providers/auth_provider.dart';
+import 'package:tasksandprojects/screens/dashboard_screen.dart';
 import 'package:tasksandprojects/screens/login_screen.dart';
 import '../providers/project_provider.dart';
 import '../models/project.dart';
@@ -164,6 +165,12 @@ class ProjectsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Proyectos'),
         actions: [
+          IconButton(
+              onPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return DashboardScreen();
+                  })),
+              icon: const Icon(Icons.dashboard_customize_rounded)),
           IconButton(
               onPressed: () {
                 AuthProvider().logout();
