@@ -6,7 +6,7 @@ import 'package:tasksandprojects/screens/login_screen.dart';
 import 'package:tasksandprojects/screens/project_detail_screen.dart';
 import '../providers/project_provider.dart';
 import '../models/project.dart';
-import '../models/task.dart';
+import '../widgets/project_card.dart';
 
 class ProjectsScreen extends StatelessWidget {
   const ProjectsScreen({super.key});
@@ -91,66 +91,6 @@ class ProjectsScreen extends StatelessWidget {
     );
   }
 
-  void _showTaskDialog(BuildContext context, Project project, {Task? task}) {
-    final formKey = GlobalKey<FormState>();
-    String title = task?.title ?? '';
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(task == null ? 'Nueva Tarea' : 'Editar Tarea'),
-        content: Form(
-          key: formKey,
-          child: TextFormField(
-            initialValue: title,
-            decoration: const InputDecoration(labelText: 'Título de la tarea'),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'Ingrese un título' : null,
-            onSaved: (v) => title = v!.trim(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                formKey.currentState!.save();
-                final provider =
-                    Provider.of<ProjectProvider>(context, listen: false);
-                final updatedTasks = List<Task>.from(project.tasks);
-                if (task == null) {
-                  updatedTasks.add(Task(
-                    id: DateTime.now().millisecondsSinceEpoch.toString(),
-                    title: title,
-                  ));
-                } else {
-                  final idx = updatedTasks.indexWhere((t) => t.id == task.id);
-                  if (idx != -1) {
-                    updatedTasks[idx] = Task(
-                      id: task.id,
-                      title: title,
-                      completed: task.completed,
-                    );
-                  }
-                }
-                provider.updateProject(Project(
-                  id: project.id,
-                  name: project.name,
-                  tasks: updatedTasks,
-                ));
-                Navigator.of(ctx).pop();
-              }
-            },
-            child: Text(task == null ? 'Crear' : 'Guardar'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _navigateToProjectDetail(BuildContext context, Project project) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -186,7 +126,7 @@ class ProjectsScreen extends StatelessWidget {
       ),
 
 body: projects.isEmpty
-    ? const Center(child: Text('No hay proyectos.'))
+    ? const Center(child: Text('No hay proyectos'))
     : Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
@@ -197,56 +137,12 @@ body: projects.isEmpty
             mainAxisSpacing: 16,
             childAspectRatio: 1.2,
           ),
-          itemBuilder: (_, i) => Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () => _navigateToProjectDetail(context, projects[i]),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      projects[i].name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const Spacer(),
-                    Text(
-                      '${projects[i].tasks.length} tareas',
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, size: 20),
-                          onPressed: () =>
-                              _showProjectDialog(context, project: projects[i]),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, size: 20),
-                          onPressed: () => _confirmDelete(context, projects[i]),
-                        ),
-                      ],
-                    ),
-                  ],
+          itemBuilder: (_, i) => ProjectCard(
+                  project: projects[i],
+                  onTap: () => _navigateToProjectDetail(context, projects[i]),
+                  onEdit: () => _showProjectDialog(context, project: projects[i]),
+                  onDelete: () => _confirmDelete(context, projects[i]),
                 ),
-              ),
-            ),
-          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
