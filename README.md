@@ -12,3 +12,11 @@ El codigo esta organizado en carpetas para modelos, gestion de estado (providers
 
 Simulacion de backend:
 Los datos se gestionan en memoria mediante repositorios, facilitando el desarrollo y las pruebas sin necesidad de una API real.
+
+Futuras mejoras:
+- Implementaria una persistencia local de datos, como por ejemplo: hive o SQLite, aunque me parece que Hive requiere menos codigo
+- Autenticación segura
+- Busqueda para listas extensas de proyectos/tareas
+- Mejoras en la experiencia de usuario y diseño visual
+- Mejor manejo de errores
+- Colaboracion entre varios usuarios para equipos, estilo notion, seria genial jajaja
