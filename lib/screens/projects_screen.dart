@@ -109,7 +109,7 @@ class ProjectsScreen extends StatelessWidget {
           IconButton(
               onPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return DashboardScreen();
+                    return const DashboardScreen();
                   })),
               icon: const Icon(Icons.dashboard_customize_rounded)),
           IconButton(

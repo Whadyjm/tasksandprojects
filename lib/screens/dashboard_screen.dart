@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../providers/project_provider.dart';
 
 class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final projects = context.watch<ProjectProvider>().projects;
