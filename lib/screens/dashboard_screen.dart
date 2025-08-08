@@ -14,17 +14,21 @@ class DashboardScreen extends StatelessWidget {
     double pendingPercent = allTasks.isEmpty ? 0 : pending / allTasks.length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            const SizedBox(height: 24),
-            Text(
-              'Resumen de Tareas',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Row(
+              children: [
+                IconButton(onPressed: ()=>Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded),),
+                const SizedBox(width: 60,),
+                Text(
+                  'Dashboard',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 100),
             _StatBar(
               label: 'Completadas',
               value: completed,

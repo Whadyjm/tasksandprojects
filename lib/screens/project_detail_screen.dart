@@ -56,7 +56,13 @@ class ProjectDetailScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(project.name)),
+      appBar: AppBar(
+        
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        title: Text(project.name)),
       body: project.tasks.isEmpty
           ? const Center(child: Text('No hay tareas.'))
           : ListView.builder(
