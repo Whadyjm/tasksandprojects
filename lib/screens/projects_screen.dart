@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasksandprojects/providers/auth_provider.dart';
+import 'package:tasksandprojects/screens/login_screen.dart';
 import '../providers/project_provider.dart';
 import '../models/project.dart';
 import '../models/task.dart';
@@ -9,7 +10,7 @@ class ProjectsScreen extends StatelessWidget {
   const ProjectsScreen({super.key});
 
   void _showProjectDialog(BuildContext context, {Project? project}) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     String name = project?.name ?? '';
 
     showDialog(
@@ -17,7 +18,7 @@ class ProjectsScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         title: Text(project == null ? 'Nuevo Proyecto' : 'Editar Proyecto'),
         content: Form(
-          key: _formKey,
+          key: formKey,
           child: TextFormField(
             initialValue: name,
             decoration: const InputDecoration(labelText: 'Nombre del proyecto'),
@@ -33,8 +34,8 @@ class ProjectsScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
                 final provider =
                     Provider.of<ProjectProvider>(context, listen: false);
                 if (project == null) {
@@ -89,7 +90,7 @@ class ProjectsScreen extends StatelessWidget {
   }
 
   void _showTaskDialog(BuildContext context, Project project, {Task? task}) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     String title = task?.title ?? '';
 
     showDialog(
@@ -97,7 +98,7 @@ class ProjectsScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         title: Text(task == null ? 'Nueva Tarea' : 'Editar Tarea'),
         content: Form(
-          key: _formKey,
+          key: formKey,
           child: TextFormField(
             initialValue: title,
             decoration: const InputDecoration(labelText: 'Título de la tarea'),
@@ -113,8 +114,8 @@ class ProjectsScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
                 final provider =
                     Provider.of<ProjectProvider>(context, listen: false);
                 final updatedTasks = List<Task>.from(project.tasks);
@@ -166,7 +167,11 @@ class ProjectsScreen extends StatelessWidget {
           IconButton(
               onPressed: () {
                 AuthProvider().logout();
-                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (route) => false);
               },
               icon: const Icon(Icons.logout)),
         ],
@@ -338,14 +343,14 @@ class ProjectDetailScreen extends StatelessWidget {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final _formKey = GlobalKey<FormState>();
+          final formKey = GlobalKey<FormState>();
           String title = '';
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
               title: const Text('Nueva Tarea'),
               content: Form(
-                key: _formKey,
+                key: formKey,
                 child: TextFormField(
                   decoration:
                       const InputDecoration(labelText: 'Título de la tarea'),
@@ -361,8 +366,8 @@ class ProjectDetailScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
+                    if (formKey.currentState!.validate()) {
+                      formKey.currentState!.save();
                       final updatedTasks = List<Task>.from(project.tasks)
                         ..add(Task(
                           id: DateTime.now().millisecondsSinceEpoch.toString(),

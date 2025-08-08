@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String _password = '';
   bool _loading = false;
   String? _error;
+  bool _obscurePassword = true;
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -39,10 +40,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Iniciar sesión')),
+      appBar: AppBar(title: const Text('Login'), centerTitle: true,),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -51,6 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const Text('Bienvenido a Tasks & Projects',style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),),
+                const SizedBox(height: 24),
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Email'),
                   keyboardType: TextInputType.emailAddress,
@@ -60,8 +63,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Contraseña'),
-                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Contraseña',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
+                  ),
+                  obscureText: _obscurePassword,
                   onSaved: (v) => _password = v!.trim(),
                   validator: (v) =>
                       v == null || v.isEmpty ? 'Ingrese su contraseña' : null,
@@ -74,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: _loading ? null : _submit,
                     child: _loading
-                        ? const CircularProgressIndicator()
+                        ? const SizedBox(height: 25, width: 25, child: CircularProgressIndicator())
                         : const Text('Entrar'),
                   ),
                 ),
